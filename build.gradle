@@ -12,7 +12,7 @@ repositories {
 
 dependencies {
     implementation 'com.github.federicozanardo:lcp-lib:v0.1.33'
-    implementation 'com.github.federicozanardo:storage-core-lib:v0.1.4'
+    implementation 'com.github.federicozanardo:storage-core-lib:v0.1.5'
 
     implementation 'org.iq80.leveldb:leveldb-api:0.12'
     implementation 'org.iq80.leveldb:leveldb:0.12'
