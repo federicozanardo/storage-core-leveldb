@@ -1,7 +1,6 @@
 package storage.module.services.ownership;
 
 import lcp.lib.models.ownership.Ownership;
-import lcp.lib.models.singleuseseal.Amount;
 import lcp.lib.models.singleuseseal.SingleUseSeal;
 import lombok.NoArgsConstructor;
 import org.iq80.leveldb.DB;
@@ -25,90 +24,6 @@ import static org.iq80.leveldb.impl.Iq80DBFactory.bytes;
 @NoArgsConstructor
 public class OwnershipsStorageService extends StorageSerializer<ArrayList<Ownership>> implements IOwnershipsStorageService {
     private DB db;
-
-    public void seed() throws LevelDBDatabaseException {
-        String assetId = "stipula_coin_asd345";
-        String aliceAssetId = "stipula_assetA_ed8i9wk";
-        String bobAssetId = "stipula_assetB_pl1n5cc";
-
-        String aliceAddress = "ubL35Am7TimL5R4oMwm2OxgAYA3XT3BeeDE56oxqdLc=";
-        String bobAddress = "f3hVW1Amltnqe3KvOT00eT7AU23FAUKdgmCluZB+nss=";
-
-        String aliceOwnershipId = "2b4a4614-3bb4-4554-93fe-c034c3ba5a9c";
-        String bobOwnershipId = "7a19f50e-eae9-461d-bd58-9946ea39ccf0";
-        String borrowerOwnershipId = "1ce080e5-8c81-48d1-b732-006fa1cc4e2e";
-
-        Amount amountAliceOwnership = new Amount(1400, 2);
-        Amount amountBobOwnership = new Amount(1100, 2);
-        Amount amountBorrowerOwnership = new Amount(1200, 2);
-
-        db = LevelDBUtils.open(String.valueOf(Constants.OWNERSHIPS_PATH));
-
-        ArrayList<Ownership> funds = null;
-
-        try {
-            funds = this.deserialize(db.get(bytes(aliceAddress)));
-        } catch (Exception exception) {
-            try {
-                db.close();
-            } catch (IOException e) {
-                throw new LevelDBDatabaseException("Error while closing the database", e);
-            }
-            System.out.println("seed: This address does not have any asset saved in the storage");
-        }
-
-        if (funds == null) {
-            funds = new ArrayList<>();
-        }
-
-        funds.add(new Ownership(aliceOwnershipId, new SingleUseSeal(aliceAssetId, amountAliceOwnership, aliceAddress)));
-        try {
-            db.put(bytes(aliceAddress), this.serialize(funds));
-        } catch (DBException e) {
-            try {
-                db.close();
-            } catch (IOException ex) {
-                throw new LevelDBDatabaseException("Error while closing the database", e);
-            }
-            throw new LevelDBDatabaseException("Error while writing to database", e);
-        }
-
-        funds = null;
-
-        try {
-            funds = this.deserialize(db.get(bytes(bobAddress)));
-        } catch (Exception exception) {
-            try {
-                db.close();
-            } catch (IOException e) {
-                throw new LevelDBDatabaseException("Error while closing the database", e);
-            }
-            System.out.println("seed: This address does not have any asset saved in the storage");
-        }
-
-        if (funds == null) {
-            funds = new ArrayList<>();
-        }
-
-        funds.add(new Ownership(bobOwnershipId, new SingleUseSeal(bobAssetId, amountBobOwnership, bobAddress)));
-        funds.add(new Ownership(borrowerOwnershipId, new SingleUseSeal(assetId, amountBorrowerOwnership, bobAddress)));
-
-        try {
-            db.put(bytes(bobAddress), this.serialize(funds));
-        } catch (DBException e) {
-            throw new RuntimeException(e);
-        } finally {
-            try {
-                db.close();
-            } catch (IOException ignored) {
-
-            }
-        }
-
-        /*System.out.println("seed: aliceOwnershipId => " + aliceOwnershipId);
-        System.out.println("seed: bobOwnershipId => " + bobOwnershipId);
-        System.out.println("seed: borrowerOwnershipId => " + borrowerOwnershipId);*/
-    }
 
     // FIXME: return a boolean (true --> success, false --> otherwise)
 
